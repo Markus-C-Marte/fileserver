@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@@TITLE@@</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+#top {
+    padding: 10px 16px 8px;
+    background: #252525;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+}
+#breadcrumb {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 8px;
+    word-break: break-all;
+    line-height: 1.6;
+}
+#breadcrumb a { color: #7ab4ff; text-decoration: none; }
+#breadcrumb a:active { text-decoration: underline; }
+#breadcrumb .cur { color: #e0e0e0; }
+#addr-form { display: flex; gap: 8px; }
+#addr-input {
+    flex: 1;
+    background: #333;
+    border: 1px solid #444;
+    color: #e0e0e0;
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    min-width: 0;
+    font-family: monospace;
+}
+#addr-input:focus { outline: none; border-color: #7ab4ff; }
+#go-btn {
+    padding: 7px 14px;
+    background: #3a3a3a;
+    border: 1px solid #555;
+    color: #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+}
+#go-btn:active { background: #4a4a4a; }
+#middle {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.entry {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    min-height: 48px;
+    border-bottom: 1px solid #242424;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    color: inherit;
+    gap: 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+.entry:active { background: #2a2a2a; }
+.entry.selected { background: #1e3a5f; }
+.badge {
+    font-size: 0.65rem;
+    font-family: monospace;
+    padding: 2px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+}
+.entry.dir .badge  { background: #3a2f00; color: #f0c070; }
+.entry.dir .name   { color: #f0c070; }
+.entry.file .badge { background: #282828; color: #666; }
+.entry.file.selected .name { color: #7ab4ff; }
+.name { font-size: 0.95rem; word-break: break-all; }
+#bottom {
+    padding: 12px 16px;
+    background: #252525;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+}
+#get-btn {
+    padding: 11px 52px;
+    background: #2a6fdb;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    min-width: 140px;
+    -webkit-tap-highlight-color: transparent;
+}
+#get-btn:active { background: #1a5fc8; }
+#overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+#overlay.show { display: flex; }
+#overlay-box {
+    background: #2c2c2c;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 28px 44px;
+    font-size: 1rem;
+    color: #ccc;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<div id="top">
+  <div id="breadcrumb">@@BREADCRUMB@@</div>
+  <form id="addr-form" onsubmit="navigate(event)">
+    <input id="addr-input" type="text" value="@@URL_PATH@@" autocomplete="off" spellcheck="false">
+    <button id="go-btn" type="submit">Go</button>
+  </form>
+</div>
+<div id="middle">
+@@ENTRIES@@
+</div>
+<div id="bottom">
+  <button id="get-btn" onclick="doGet()">GET</button>
+</div>
+<div id="overlay" onclick="closeOverlay()">
+  <div id="overlay-box">No file selected</div>
+</div>
+<script>
+var selected = null;
+
+function selectFile(el) {
+    if (selected && selected !== el) selected.classList.remove('selected');
+    if (selected === el) { selected = null; el.classList.remove('selected'); return; }
+    el.classList.add('selected');
+    selected = el;
+}
+
+function doGet() {
+    if (!selected) { document.getElementById('overlay').classList.add('show'); return; }
+    window.location.href = selected.dataset.url;
+}
+
+function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeOverlay();
+});
+
+function navigate(e) {
+    e.preventDefault();
+    var val = document.getElementById('addr-input').value.trim();
+    if (!val) return;
+    if (!val.startsWith('/')) val = '/' + val;
+    window.location.href = val;
+}
+</script>
+</body>
+</html>

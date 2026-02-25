@@ -1,0 +1,13 @@
+[Unit]
+Description=Flash App Web Server
+After=network.target
+RequiresMountsFor=/srv/samba/EXT
+
+[Service]
+User=serv
+WorkingDirectory=/srv/samba/EXT/vault/fileserver
+ExecStart=/bin/bash /srv/samba/EXT/vault/fileserver/run.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

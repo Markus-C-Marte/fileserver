@@ -1,0 +1,5 @@
+[
+  {"label": "Gamecube Roms", "path": "/srv/samba/INT/Backups/GameCube/" },
+  {"label": "PS2 Roms", "path": "/srv/samba/INT/Backups/PS2/" },
+  {"label": "Retro Roms", "path": "/srv/samba/INT/Backups/Ambernic/" }
+]
